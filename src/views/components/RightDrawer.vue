@@ -43,16 +43,16 @@
       </div>
     </div>
     <div v-if="drawerType === 'node'">
-      <div class="drawer_title">设备设置</div>
+      <div class="drawer_title">节点设置</div>
       <div class="drawer_wrap">
         <Form label-position="left" :label-width="80">
-          <FormItem label="设备文本">
+          <FormItem label="节点文本">
             <Input
               v-model="drawerNode.nodeText"
               @on-change="changeNodeText"
             ></Input>
           </FormItem>
-          <FormItem label="设备背景">
+          <FormItem label="节点背景">
             <ColorPicker v-model="drawerNode.fill" @on-change="changeFill" />
           </FormItem>
           <FormItem label="字体大小">
@@ -63,26 +63,17 @@
               @on-change="changefontSize"
             ></Slider>
           </FormItem>
-          <FormItem label="透明度">
-            <Slider
-              v-model="drawerNode.opacity"
-              :min="0"
-              :max="1"
-              :step="0.05"
-              @on-change="changeItemOpacity"
-            ></Slider>
-          </FormItem>
           <FormItem label="字体颜色">
             <ColorPicker
               v-model="drawerNode.fontFill"
               @on-change="changeFontFill"
             />
           </FormItem>
-          <FormItem label="z-Index">
+          <FormItem label="边框宽度">
             <Slider
-              v-model="drawerNode.zIndex"
+              v-model="drawerNode.strokeWidth"
               :min="0"
-              :max="100"
+              :max="10"
               @on-change="changeStrokeWidth"
             ></Slider>
           </FormItem>
@@ -91,18 +82,6 @@
               v-model="drawerNode.stroke"
               @on-change="changeStroke"
             />
-          </FormItem>
-          <!-- 需要更改 -->
-          <FormItem label="边框类型" v-if="selectCell.shape!='html'">
-            <RadioGroup @on-change="changeBorder" v-model="drawerNode.strokeDasharray">
-              <Radio
-                v-for="item in borderTypeList"
-                :label="item.value"
-                :key="item.value"
-              >
-                <span>{{ item.label }}</span>
-              </Radio>
-            </RadioGroup>
           </FormItem>
           <FormItem label="功能">
             <Button type="primary" icon="md-trending-up" @click="toTopZIndex"
@@ -133,28 +112,9 @@
             <Slider
               v-model="drawerEdge.edgeWidth"
               :min="1"
-              :max="15"
+              :max="10"
               @on-change="changeEdgeWidth"
             ></Slider>
-          </FormItem>
-          <FormItem label="z-Index">
-            <Slider
-              v-model="drawerNode.zIndex"
-              :min="0"
-              :max="100"
-              @on-change="changeStrokeWidth"
-            ></Slider>
-          </FormItem>
-          <FormItem label="线条类型">
-            <RadioGroup @on-change="changeLineBorder" v-model="drawerEdge.strokeDasharray">
-              <Radio
-                v-for="item in lineTypeList"
-                :label="item.value"
-                :key="item.value"
-              >
-                <span>{{ item.label }}</span>
-              </Radio>
-            </RadioGroup>
           </FormItem>
           <FormItem label="线条颜色">
             <ColorPicker
@@ -198,42 +158,19 @@ export default {
           value: "dot"
         }
       ],
-      borderTypeList: [
-        {
-          label: "实线",
-          value: "3 0"
-        },
-        {
-          label: "虚线",
-          value: "3 3"
-        }
-      ],
-      lineTypeList: [
-        {
-          label: "实线",
-          value: "3 0"
-        },
-        {
-          label: "虚线",
-          value: "3 3"
-        }
-      ],
       showGrid: true,
       drawerNode: {
         fill: "",
         nodeText: "",
         fontSize: null,
         fontFill: "",
-        zIndex: null,
-        stroke: "",
-        opacity: null,
-        strokeDasharray: "9 1"
+        strokeWidth: null,
+        stroke: ""
       },
       drawerEdge: {
         EdgeText: "",
         edgeWidth: null,
-        edgeColor: "",
-        strokeDasharray: "9 0"
+        edgeColor: ""
       }
     };
   },
@@ -258,59 +195,25 @@ export default {
       handler(val) {
         if (val) {
           if (val.isNode()) {
-            console.log(this.drawerType);
-            //设备
-            this.drawerNode.fill = val.store.data.attrs.body
-              ? val.store.data.attrs.body.fill
-              : "";
-            this.drawerNode.nodeText = val.store.data.attrs.label
-              ? val.store.data.attrs.label.text
-              : "";
-            this.drawerNode.fontFill = val.store.data.attrs.label
-              ? val.store.data.attrs.label.fill
-              : "";
+            //节点
+            this.drawerNode.fill = val.store.data.attrs.body?val.store.data.attrs.body.fill:"";
+            this.drawerNode.nodeText = val.store.data.attrs.label?val.store.data.attrs.label.text:"";
+            this.drawerNode.fontFill = val.store.data.attrs.label?val.store.data.attrs.label.fill:"";
             this.drawerNode.fontSize = Number(
-              val.store.data.attrs.label
-                ? val.store.data.attrs.label.fontSize
-                : ""
+              val.store.data.attrs.label?val.store.data.attrs.label.fontSize:""
             );
-            // console.log(val.store.data.shape != "html");
-            // console.log(val.store.data);
-            console.log(this.selectCell);
-            if (val.store.data.shape != "html") {
-              if (!val.store.data.attrs.body.opacity) {
-                val.store.data.attrs.body.opacity = 1;
-              }
-              this.drawerNode.opacity = Number(
-                val.store.data.attrs.body.opacity
-              );
-            } else {
-              console.log(this.drawerNode);
-              console.log(document.getElementById(
-                val.store.data.id
-              ));
-              if(!document.getElementById(
-                val.store.data.id
-              )){
-                return this.drawerNode.opacity = null
-              }
-              this.drawerNode.opacity = val.store.data.data.opacity;
-              document.getElementById(
-                val.store.data.id
-              ).style.opacity = this.drawerNode.opacity;
-            }
-            this.drawerNode.zIndex = Number(
-              val.store.data.attrs.body ? val.store.data.zIndex : ""
+            this.drawerNode.strokeWidth = Number(
+              val.store.data.attrs.body?val.store.data.attrs.body.strokeWidth:""
             );
-            this.drawerNode.stroke = val.store.data.attrs.body
-              ? val.store.data.attrs.body.stroke
-              : "";
+            this.drawerNode.stroke = val.store.data.attrs.body?val.store.data.attrs.body.stroke:"";
           } else {
             //边
             this.drawerEdge.EdgeText = val.store.data.labels
               ? val.store.data.labels[0].text
               : "";
-            this.drawerEdge.edgeWidth = Number(val.store.data.zIndex);
+            this.drawerEdge.edgeWidth = Number(
+              val.store.data.attrs.line.strokeWidth
+            );
             this.drawerEdge.edgeColor = val.store.data.attrs.line.stroke;
           }
         }
@@ -320,26 +223,6 @@ export default {
     }
   },
   methods: {
-    // 改变线的样式
-    changeLineBorder(e){
-      console.log(this.selectCell);
-      console.log(e);
-    this.selectCell.setAttrs({
-        line:{
-          strokeDasharray:e
-        }
-      })
-},
-    // 改变边框样式
-    changeBorder(e){
-      console.log(e);
-      console.log(this.selectCell);
-      this.selectCell.setAttrs({
-        body:{
-          strokeDasharray:e
-        }
-      })
-    },
     // 网格设置
     changeGrid() {
       this.showGrid ? this.graph.showGrid() : this.graph.hideGrid();
@@ -353,23 +236,12 @@ export default {
         ...this.grid
       });
     },
-    // 设备设置
+    // 节点设置
     changeStrokeWidth(val) {
-      // console.log(val);
-      this.selectCell.setZIndex(val);
-      // this.selectCell.attr("body/strokeWidth", val);//zIndex换成strokeWidth，就是设置边框宽度
+      this.selectCell.attr("body/strokeWidth", val);
     },
     changefontSize(val) {
       this.selectCell.attr("label/fontSize", val);
-    },
-    changeItemOpacity(val) {
-      console.log(this.selectCell);
-      if (this.selectCell.shape != "html") {
-        this.selectCell.attr("body/opacity", val);
-      } else {
-        this.selectCell.data.opacity = val
-        document.getElementById(this.selectCell.id).style.opacity = val;
-      }
     },
     changeNodeText() {
       this.selectCell.attr("label/text", this.drawerNode.nodeText);
@@ -415,8 +287,8 @@ export default {
 
 <style lang="less" scoped>
 .drawer_container {
-  max-width: 290px;
-  min-width: 290px;
+  max-width: 300px;
+  min-width: 300px;
   .drawer_title {
     border-bottom: 1px solid #e8eaec;
     box-sizing: border-box;

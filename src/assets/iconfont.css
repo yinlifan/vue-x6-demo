@@ -6,7 +6,7 @@
     url('//at.alicdn.com/t/font_2431749_zpzhmewttjs.ttf?t=1616140304099') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
     url('//at.alicdn.com/t/font_2431749_zpzhmewttjs.svg?t=1616140304099#iconfont') format('svg'); /* iOS 4.1- */
   }
-
+  
   .iconfont {
     font-family: "iconfont" !important;
     font-size: 16px;
@@ -14,47 +14,48 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-
+  
   .icon-straight:before {
     content: "\e752";
   }
-
+  
   .icon-mousepointershubiao:before {
     content: "\e6df";
   }
-
+  
   .icon-ai28:before {
     content: "\e68e";
   }
-
+  
   .icon-baocun:before {
     content: "\e60b";
   }
-
+  
   .icon-Down-Right:before {
     content: "\e741";
   }
-
+  
   .icon-tuozhuai:before {
     content: "\e636";
   }
-
+  
   .icon-circle:before {
     content: "\e642";
   }
-
+  
   .icon-quxian:before {
     content: "\e637";
   }
-
+  
   .icon-square:before {
     content: "\e676";
   }
-
+  
   .icon-shanchu:before {
     content: "\e696";
   }
-
+  
   .icon-jiantou:before {
     content: "\e7e2";
   }
+  
